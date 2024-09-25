@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Votos en Tiempo Real</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 1.5em;
+        }
+        .vote-count {
+            font-weight: bold;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Resultados de Votos</h1>
+    <p>Votos para Gatos: <span id="catsVotes" class="vote-count">0</span></p>
+    <p>Votos para Perros: <span id="dogsVotes" class="vote-count">0</span></p>
+
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host);
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+
+            document.getElementById('catsVotes').innerText = data.catsVotes;
+            document.getElementById('dogsVotes').innerText = data.dogsVotes;
+        };
+
+        socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+
+        socket.onclose = function() {
+            console.log('WebSocket cerrado.');
+        };
+    </script>
+</body>
+</html>

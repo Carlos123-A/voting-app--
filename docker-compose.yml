@@ -1,0 +1,40 @@
+version: '3'
+services:
+  voting-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+      - db
+      - node-app
+
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
+
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+
+  node-app:  
+    build:
+      context: ./node
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
